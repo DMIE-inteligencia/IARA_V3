@@ -1,0 +1,195 @@
+# IARA_CHAT_V2
+Versão avançada da IARA com arquitetura de agentes e sistema modular
+
+## Sobre o Projeto
+
+IARA (Inteligência Artificial para Recuperação e Análise) é um assistente de documentos baseado em IA que permite aos usuários fazer perguntas sobre documentos carregados e / ou perguntas relacionadas ao atendimento que ele já tenha recebido em algum momento. O sistema utiliza técnicas de RAG (Retrieval Augmented Generation) combinadas com uma arquitetura multi-agente para fornecer respostas precisas com base no conteúdo dos documentos. Além disso utilizaremos o MCP com parte integrante desse sistema.
+
+## Arquitetura do Sistema
+
+A IARA V2 adota uma arquitetura baseada em agentes, onde cada componente do sistema é implementado como um agente independente e especializado. Esta abordagem proporciona:
+
+- **Modularidade**: Cada agente tem responsabilidades bem definidas e isoladas
+- **Escalabilidade**: Agentes podem ser adicionados ou modificados sem impactar o resto do sistema
+- **Resiliência**: Falhas em um agente podem ser isoladas e não comprometem todo o sistema
+- **Manutenibilidade**: Código mais organizado e fácil de manter
+
+### Sistema de Agentes
+
+O núcleo da IARA V2 é composto pelos seguintes agentes:
+
+1. **Orquestrador (OrchestratorAgent)**:
+   - Coordena todos os outros agentes do sistema
+   - Gerencia o ciclo de vida dos agentes
+   - Roteia mensagens entre agentes
+   - Resolve conflitos entre agentes
+
+2. **LLM (LLMAgent)**:
+   - Gerencia diferentes modelos de linguagem
+   - Gera respostas para consultas
+   - Mantém o contexto da conversa
+   - Alterna entre diferentes modelos conforme necessário
+
+3. **Processamento de Documentos (DocumentProcessingAgent)**:
+   - Carrega e valida documentos
+   - Divide documentos em chunks apropriados
+   - Coordena a geração de embeddings
+   - Gerencia o armazenamento de documentos processados
+
+4. **Recuperação de Informações (InformationRetrievalAgent)**:
+   - Mantém e otimiza o vectorstore
+   - Implementa estratégias avançadas de recuperação
+   - Reranqueia resultados para maior precisão
+   - Gerencia cache de consultas frequentes
+
+5. **Diálogo (DialogueAgent)**:
+   - Processa entradas do usuário
+   - Mantém o histórico e contexto da conversa
+   - Formata respostas para apresentação ao usuário
+   - Detecta intenções do usuário
+
+6. **Segurança (SecurityAgent)**:
+   - Autentica e autoriza usuários
+   - Detecta atividades suspeitas
+   - Protege contra ataques
+   - Valida entradas
+
+### Infraestrutura
+
+Além dos agentes, a IARA V2 conta com uma robusta infraestrutura de suporte:
+
+1. **Sistema de Mensagens**:
+   - Broker de mensagens para comunicação entre agentes
+   - Filas de prioridade para mensagens
+   - Mecanismos síncronos e assíncronos de comunicação
+
+2. **Persistência de Dados**:
+   - MongoDB para armazenamento de todos os dados não-vetoriais
+   - Soluções especializadas para armazenamento de vetores e embeddings
+
+## Funcionalidades
+
+- **Autenticação de Usuários**: Sistema completo de login e registro com armazenamento seguro de credenciais
+- **Upload de Documentos**: Suporte para carregar múltiplos documentos em diversos formatos
+- **Processamento de Documentos**: Divisão automática de documentos em chunks e criação de embeddings
+- **Chat Interativo**: Interface de chat para fazer perguntas sobre os documentos
+- **Histórico de Chat**: Armazenamento do histórico de conversas para cada usuário
+- **Seleção de Modelos**: Interface para escolher entre diferentes modelos de IA
+- **Sistema de Monitoramento**: Monitoramento proativo do sistema e métricas de desempenho
+- **Segurança Avançada**: Proteção contra acesso não autorizado e atividades maliciosas
+
+## Estrutura do Projeto
+
+```
+IARA_CHAT_V2/
+│
+├── app/                    # Interface do aplicativo
+│   ├── components/         # Componentes da interface
+│   │   ├── chat_interface.py
+│   │   └── document_upload.py
+│   └── main.py             # Aplicativo Streamlit principal
+│
+├── core/                   # Núcleo da aplicação
+│   ├── agents/             # Sistema de agentes
+│   │   ├── agent_factory.py
+│   │   ├── agent_types.py
+│   │   ├── base_agent.py
+│   │   ├── orchestrator_agent.py
+│   │   ├── llm_agent.py
+│   │   ├── document_processing_agent.py
+│   │   ├── information_retrieval_agent.py
+│   │   ├── dialogue_agent.py
+│   │   ├── security_agent.py
+│   │   ├── monitoring_agent.py
+│   │   └── administration_agent.py
+│   ├── document_processing/# Processamento de documentos
+│   │   ├── embeddings.py
+│   │   ├── loaders.py
+│   │   └── splitters.py
+│   ├── models/             # Modelos de linguagem
+│   │   ├── base.py
+│   │   ├── llm.py
+│   │   ├── hf_models.py
+│   │   ├── ollama_models.py
+│   │   └── openai_models.py
+│   └── rag/                # Componentes RAG
+│       ├── chains.py
+│       ├── prompts.py
+│       └── retriever.py
+│
+├── infrastructure/         # Infraestrutura do sistema
+│   ├── messaging/          # Sistema de mensagens
+│   │   └── message_broker.py
+│   └── state/              # Gerenciamento de estado
+│
+├── data/                   # Diretório para armazenamento de dados
+│   └── vectorstores/       # Armazenamento de vetores para recuperação
+│
+├── tests/                  # Testes automatizados
+│
+├── doc/                    # Documentação
+│   ├── ROADMAP.md          # Plano de melhorias futuras
+│   ├── inventario_agentes.md # Inventário dos agentes
+│   ├── transcricoes/       # Documentação de análises e reuniões
+│   └── old/                # Código e documentação obsoletos
+│
+├── requirements.txt        # Dependências do projeto
+└── README.md               # Este arquivo
+```
+
+## Configuração
+
+1. Clone o repositório:
+```bash
+git clone https://github.com/seu-usuario/IARA_CHAT_V2.git
+cd IARA_CHAT_V2
+```
+
+2. Instale as dependências:
+```bash
+pip install -r requirements.txt
+```
+
+3. Configure as variáveis de ambiente:
+   - Crie um arquivo `.env` baseado no `.env.example`
+   - Adicione suas credenciais do MongoDB e outras chaves de API necessárias
+
+4. Inicie o aplicativo:
+```bash
+streamlit run app/main.py
+```
+
+## Armazenamento de Dados
+
+A IARA V2 utiliza um sistema híbrido de armazenamento de dados:
+
+1. **MongoDB**: Todos os dados não-vetoriais são armazenados no MongoDB, incluindo:
+   - Configurações do sistema
+   - Histórico de conversas
+   - Informações de usuários
+   - Métricas de desempenho
+   - Logs e alertas
+
+2. **Armazenamento de Vetores**: Para dados vetoriais (embeddings), o sistema utiliza:
+   - FAISS para armazenamento local
+   - Suporte para outras soluções de armazenamento de vetores
+
+## Documentação Adicional
+
+Para mais informações sobre o desenvolvimento e planejamento do projeto, consulte:
+
+- [ROADMAP.md](doc/ROADMAP.md): Plano detalhado de melhorias futuras
+- [Inventário de Agentes](doc/inventario_agentes.md): Catálogo dos agentes do sistema
+
+## Requisitos
+
+- Python 3.9+
+- MongoDB 5.0+
+- Streamlit 1.20+
+- LangChain 0.1.0+
+- FAISS 1.7.0+
+- PyTorch 2.0+ (para alguns modelos)
+
+## Licença
+
+Copyright 2025 - Todos os direitos reservados
